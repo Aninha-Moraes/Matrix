@@ -19,7 +19,7 @@ def matrixStringGenerator(entryArea, stopFlag, availableStringSizes):
             sortedIndexToBeFilled = indexesOfEmptyEntryStrings[random.randint(0, len(indexesOfEmptyEntryStrings) - 1)]
 
             entryArea[sortedIndexToBeFilled]["full"] = True
-            entryArea[sortedIndexToBeFilled]["currentNumberOfChars"] = random.randint(availableStringSizes.min, availableStringSizes.max)
+            entryArea[sortedIndexToBeFilled]["currentNumberOfChars"] = random.randint(availableStringSizes["min"], availableStringSizes["max"])
             
 
         time.sleep(constants.MATRIX_STRING_GENERATOR_INTERVAL)

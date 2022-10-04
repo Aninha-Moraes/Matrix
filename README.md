@@ -48,3 +48,18 @@ All colors available in matrix is right here, follow the list:
     <li>bright_cyan</li>
     <li>bright_white</li>
 </ul>
+
+# Changing matrix string size
+Useful for different sizes of terminal's window, this feature give you the possibility to change the string length of the falling strings
+
+## Changing the min size
+To change the min size of falling strings use the CLI command below
+```txt
+--min-string-size or -M
+```
+
+## Changing the max size
+To change the max size of falling strings use the CLI command below
+```txt
+--max-string-size or -M
+```
