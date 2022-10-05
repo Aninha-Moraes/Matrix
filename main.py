@@ -2,18 +2,19 @@ from functools import partial
 from os import system
 import argparse
 import threading
+import sys
 import functions.terminal as terminal
 import functions.costumization as costumization
 import functions.controllers as controllers
 import signal
 import functions.programConfig as programConfig
+from classes.sharedValues import sharedValues
 
-terminalSizes = None
-matrixArea = None
-entryArea = None
+threadSharedValues = sharedValues
 newTerminalSize = None
 foregroundColor = 92
 backgroundColor = 1
+operatingSystemClearCommand = "cls" if sys.platform == "win32" else "clear"
 stopFlag = [True]
 stringSizes = {
     "max" : 12,
@@ -21,7 +22,7 @@ stringSizes = {
 }
 
 
-system("clear")
+system(operatingSystemClearCommand)
 
 parser = argparse.ArgumentParser(description="Matrix program")
 parser.add_argument("-f", "--foreground-color", help="Set matrix string color", type=str)
@@ -66,19 +67,19 @@ if(stringSizes["max"] <= 0 or stringSizes["min"] <= 0):
 
 signal.signal(signal.SIGINT, partial(programConfig.signalHandling, stopFlag))
 
-terminalSizes = terminal.getTerminalSizes()
-matrixArea = terminal.generateMatrixArea(terminalSizes.columns, terminalSizes.lines)
-entryArea = terminal.generateEntryArea(terminalSizes.columns)
+threadSharedValues.terminalSizes = terminal.getTerminalSizes()
+threadSharedValues.matrixArea = terminal.generateMatrixArea(threadSharedValues.terminalSizes.columns, threadSharedValues.terminalSizes.lines)
+threadSharedValues.entryArea = terminal.generateEntryArea(threadSharedValues.terminalSizes.columns)
 
 terminal.hideCursor()
 
-matrixGeneratorThread = threading.Thread(target=controllers.matrixStringGenerator,args=(entryArea,stopFlag, stringSizes))
+matrixGeneratorThread = threading.Thread(target=controllers.matrixStringGenerator,args=(threadSharedValues,stopFlag, stringSizes))
 matrixGeneratorThread.start()
 
-controllers.matrixRenderer(foregroundColor, backgroundColor, terminalSizes, matrixArea, entryArea, stopFlag)
+controllers.matrixRenderer(foregroundColor, backgroundColor, threadSharedValues, stopFlag, operatingSystemClearCommand)
 
-terminal.moveCursor(terminalSizes.lines, terminalSizes.columns)
+terminal.moveCursor(threadSharedValues.terminalSizes.lines, threadSharedValues.terminalSizes.columns)
 
-system("clear")
+system(operatingSystemClearCommand)
 
 terminal.showCursor()
